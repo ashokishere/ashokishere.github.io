@@ -16,13 +16,13 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Use a suitable Node.js version
+        node-version: '16'  # Use the appropriate Node.js version
 
     - name: Install dependencies
       run: npm install
 
     - name: Set up Hugo (Extended version)
-      uses: peaceiris/actions-hugo@v2
+      uses: peaceiris/actions-hugo@v3  # Use the latest version of the Hugo action
       with:
         hugo-version: 'extended'  # Use the extended version of Hugo
 
