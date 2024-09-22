@@ -21,17 +21,27 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'  # Use the appropriate Go version
+        go-version: '1.20'  # Specify the Go version
 
     - name: Set up Hugo (Extended version)
       uses: peaceiris/actions-hugo@v3
       with:
-        hugo-version: '0.117.0'  # Use an exact version
+        hugo-version: '0.117.0'  # Specify Hugo extended version
         extended: true
 
+    # Skip caching for now if there's no go.sum
+    # - name: Cache Go modules
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: |
+    #       ~/.cache/go-build
+    #       ~/go/pkg/mod
+    #     key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-go-
+
     - name: Install Go dependencies
-      run: |
-        go mod tidy  # Clean up and ensure all dependencies are downloaded
+      run: go mod tidy  # Ensure go.mod and go.sum are up to date
 
     - name: Build site
       run: hugo --minify
