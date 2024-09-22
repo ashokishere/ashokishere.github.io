@@ -1,53 +1,44 @@
-name: GitHub Pages Deployment
+name: GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Change this to your default branch if different.
+      - source  # Set a branch name to trigger deployment
+  pull_request:
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+      
+      - name: Update Hugo Modules
+        run: hugo mod tidy
+      
+      - name: Install node modules
+        run: |
+          hugo mod npm pack
+          npm install 
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.20'  # Specify the Go version
+      - name: Build
+        run: hugo --minify
 
-    - name: Set up Hugo (Extended version)
-      uses: peaceiris/actions-hugo@v3
-      with:
-        hugo-version: '0.117.0'  # Specify Hugo extended version
-        extended: true
-
-    # Skip caching for now if there's no go.sum
-    # - name: Cache Go modules
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       ~/.cache/go-build
-    #       ~/go/pkg/mod
-    #     key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-go-
-
-    - name: Install Go dependencies
-      run: go mod tidy  # Ensure go.mod and go.sum are up to date
-
-    - name: Build site
-      run: hugo --minify
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        personal_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./public
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3.9.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: main
+          publish_dir: ./public
