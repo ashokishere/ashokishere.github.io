@@ -21,10 +21,11 @@ jobs:
     - name: Set up Hugo (Extended version)
       uses: peaceiris/actions-hugo@v3
       with:
-        hugo-version: '0.117.0'  # Explicitly specify the extended Hugo version
+        hugo-version: '0.117.0'  # Specify the exact version of Hugo extended
+        extended: true  # Ensure extended version is enabled
 
     - name: Install dependencies
-      run: npm install  # Run this step if your Hugo theme needs Node.js packages
+      run: npm install  # If necessary for your project
 
     - name: Build site
       run: hugo --minify
@@ -34,3 +35,4 @@ jobs:
       with:
         personal_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
+
