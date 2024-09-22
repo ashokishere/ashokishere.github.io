@@ -16,15 +16,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'  # Use Node.js version 20 
-
-    - name: Install dependencies
-      run: npm install
+        node-version: '20'  # Use Node.js version 20
 
     - name: Set up Hugo (Extended version)
-      uses: peaceiris/actions-hugo@v3  # Update to v3 for the latest version
+      uses: peaceiris/actions-hugo@v3
       with:
-        hugo-version: 'extended'  # Use the extended version of Hugo
+        hugo-version: 'extended'  # This fetches the extended version of Hugo
+
+    - name: Install dependencies (Optional)
+      run: npm install  # Run this step if your Hugo theme or project needs Node.js packages
 
     - name: Build site
       run: hugo --minify
