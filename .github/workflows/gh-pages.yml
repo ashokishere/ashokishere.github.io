@@ -13,10 +13,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Hugo
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Use a suitable Node.js version
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Set up Hugo (Extended version)
       uses: peaceiris/actions-hugo@v2
       with:
-        hugo-version: 'latest'
+        hugo-version: 'extended'  # Use the extended version of Hugo
 
     - name: Build site
       run: hugo --minify
